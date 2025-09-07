@@ -216,6 +216,8 @@ class Nanoleaf():
         """
         response = requests.get(self.url + "/state/on")
         ans = json.loads(response.text)
+        if 'on' in ans:
+          ans = ans['on']
         return ans['value']
 
     def toggle_power(self) -> bool:
