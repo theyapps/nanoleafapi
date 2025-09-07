@@ -6,9 +6,19 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Simple CLI Interface for the nanleafapi")
 
     # Actions TODO: Impement help messages
+    #
     parser.add_argument("--discovery", action="store_true", help="")
     parser.add_argument("--get_token", action="store_true", help="")
-    parser.add_argument("--toggle_power", action="store_true", help="")
+
+    parser.add_argument("--get_info", action="store_true", help="Returns device information dictionary")
+    parser.add_argument("--get_name", action="store_true", help="Returns the current device name")
+    parser.add_argument("--check_connection", action="store_true", help="Raises NanoleafConnectionError if connection fails")
+
+    parser.add_argument("--get_power", action="store_true", help="Returns True if lights are on, otherwise False")
+    parser.add_argument("--power_off", action="store_true", help="Powers off the lights")
+    parser.add_argument("--power_on", action="store_true", help="Powers on the lights")
+    parser.add_argument("--toggle_power", action="store_true", help="Toggles light on/off")
+
     parser.add_argument("--set_color", type=str, help="")
     parser.add_argument("--get_current_effect", action="store_true", help="")
 
@@ -46,14 +56,31 @@ if __name__ == "__main__":
 # [ ] delete_auth_token()   # Deletes an authentication token from the device and the token storage file.
 
 # General
-# [ ] get_info()         # Returns device information dictionary
-# [ ] get_name()         # Returns the current device name
+# [X] get_info()         # Returns device information dictionary
+    if args.get_info:
+        nl = Nanoleaf(f"{host}")
+        print(f"{nl.get_info()}")
+
+# [X] get_name()         # Returns the current device name
+    if args.get_name:
+        nl = Nanoleaf(f"{host}")
+        print(f"{nl.get_name()}")
+
 # [ ] check_connection() # Raises NanoleafConnectionError if connection fails
 
 # Power
-# [ ] get_power()               # Returns True if lights are on, otherwise False
-# [ ] power_off()               # Powers off the lights
-# [ ] power_on()                # Powers on the lights
+# [X] get_power()               # Returns True if lights are on, otherwise False
+    if args.get_power:
+        nl = Nanoleaf(f"{host}")
+        print(f"{nl.get_power()}")
+# [X] power_off()               # Powers off the lights
+    if args.power_off:
+        nl = Nanoleaf(f"{host}")
+        nl.power_off()
+# [X] power_on()                # Powers on the lights
+    if args.power_on:
+        nl = Nanoleaf(f"{host}")
+        nl.power_on()
 # [X] toggle_power()            # Toggles light on/off
     if args.toggle_power:
         nl = Nanoleaf(f"{host}")
