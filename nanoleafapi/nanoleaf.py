@@ -286,6 +286,8 @@ class Nanoleaf():
         """Returns the current brightness value of the lights"""
         response = requests.get(self.url + "/state/brightness")
         ans = json.loads(response.text)
+        if 'brightness' in ans:
+          ans = ans['brightness']
         return ans['value']
 
     #######################################################
@@ -332,6 +334,8 @@ class Nanoleaf():
         """Returns the current hue value of the lights"""
         response = requests.get(self.url + "/state/hue")
         ans = json.loads(response.text)
+        if 'hue' in ans:
+          ans = ans['hue']
         return ans['value']
 
     #######################################################
@@ -367,6 +371,8 @@ class Nanoleaf():
         """Returns the current saturation value of the lights"""
         response = requests.get(self.url + "/state/sat")
         ans = json.loads(response.text)
+        if 'sat' in ans:
+          ans = ans['sat']
         return ans['value']
 
     #######################################################
@@ -402,6 +408,8 @@ class Nanoleaf():
         """Returns the current colour temperature of the lights"""
         response = requests.get(self.url + "/state/ct")
         ans = json.loads(response.text)
+        if 'ct' in ans:
+          ans = ans['ct']
         return ans['value']
 
     #######################################################
