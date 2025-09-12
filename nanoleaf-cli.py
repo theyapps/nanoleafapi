@@ -33,14 +33,14 @@ def setup_args():
 
     parser.add_argument("command", choices=function_map.keys())
 
+    # Params
     parser.add_argument("--color", type=str, help="")
-
     parser.add_argument("-b", "--brightness", type=int, help="")
     parser.add_argument("-d", "--duration", type=int, help="Optional (Default=0), The duration over which to change the brightness ")
-
+    parser.add_argument("-u", "--hue", type=int, help="")
     parser.add_argument("-i", "--increment", type=int, help="")
+    parser.add_argument("-n", "--name", type=int, help="")
 
-    # Params
     parser.add_argument("--host", type=str, help="Hostname for the Nanoleaf lights.")
     parser.add_argument("--debug", action="store_true", help="Print debug logs.")
 
@@ -62,6 +62,21 @@ def setup_function_map():
             'set_brightness': set_brightness,
             'increment_brightness': increment_brightness,
             'get_brightness': get_brightness,
+            'set_hue': set_hue,
+            'increment_hue': increment_hue,
+            'get_hue': get_hue,
+            'set_saturation': set_saturation,
+            'increment_saturation': increment_saturation,
+            'get_saturation': get_saturation,
+            'set_color_temp': set_color_temp,
+            'increment_color_temp': increment_color_temp,
+            'get_color_temp': get_color_temp,
+            'identify': identify,
+            'get_color_mode': get_color_mode,
+            'get_current_effect': get_current_effect,
+            'list_effects': list_effects,
+            'effect_exists': effect_exists,
+            'set_effect': set_effect,
         }
 
 def get_host(args):
@@ -118,16 +133,15 @@ def set_color(args, nl):
     if not args.color:
         print_error("--color argument required")
         exit(ERROR_MISSING_ARGS)
-    color = args.color
 
-    print_debug(f"Set color to: {color}")
+    print_debug(f"Set color to: {args.color}")
 
-    if is_three_tuple(color):
+    if is_three_tuple(args.color):
         print_debug("String matches tuple")
-        nl.set_color(ast.literal_eval(color))
-    elif color in COLORS:
+        nl.set_color(ast.literal_eval(args.color))
+    elif args.color in COLORS:
         print_debug("Color is a defined color")
-        nl.set_color(COLORS[color])
+        nl.set_color(COLORS[args.color])
     else:
         print_debug("Not Tuple")
 
@@ -147,12 +161,76 @@ def increment_brightness(args, nl):
     if not args.increment:
         print_error("--increment argument required")
         exit(ERROR_MISSING_ARGS)
-    increment = args.increment
-
-    nl.increment_brightness(increment)
+    nl.increment_brightness(args.increment)
 
 def get_brightness(args, nl):
     print(nl.get_brightness())
+
+def set_hue(args, nl):
+    if not args.hue:
+        print_error("--hue argument required")
+        exit(ERROR_MISSING_ARGS)
+    nl.set_hue(args.hue)
+
+def increment_hue(args, nl):
+    if not args.increment:
+        print_error("--increment argument required")
+        exit(ERROR_MISSING_ARGS)
+    nl.increment_hue(args.increment)
+
+def get_hue(args, nl):
+    print(nl.get_hue())
+
+def set_saturation(args, nl):
+    if not args.saturation:
+        print_error("--hue argument required")
+        exit(ERROR_MISSING_ARGS)
+    nl.set_saturation(args.saturation)
+
+def increment_saturation(args, nl):
+    if not args.increment:
+        print_error("--increment argument required")
+        exit(ERROR_MISSING_ARGS)
+    nl.increment_saturation(args.increment)
+
+def get_saturation(args, nl):
+    print(nl.get_saturation())
+
+def identify(args, nl):
+    nl.identify()
+
+def set_color_temp(args, nl):
+    if not args.color_temp:
+        print_error("--hue argument required")
+        exit(ERROR_MISSING_ARGS)
+    nl.set_color_temp(args.color_temp)
+
+def increment_color_temp(args, nl):
+    if not args.increment:
+        print_error("--increment argument required")
+        exit(ERROR_MISSING_ARGS)
+    nl.increment_color_temp(args.increment)
+
+def get_color_temp(args, nl):
+    print(nl.get_color_temp())
+
+def get_color_mode(args, nl):
+    print(nl.get_color_mode())
+
+def get_current_effect(args, nl):
+    print(nl.get_current_effect())
+
+def list_effects(args, nl):
+    print(nl.list_effects())
+
+def effect_exists(args, nl): #name
+    if not args.name:
+        print_error("--name argument required")
+        exit(ERROR_MISSING_ARGS)
+    nl.effect_exists(args.name)
+
+def set_effect(args, nl): #name
+    pass
 
 if __name__ == "__main__":
     args = setup_args()
@@ -168,96 +246,3 @@ if __name__ == "__main__":
         selected_function(args, nl)
     else:
         print("Invalid command specified.")
-
-#     if args.get_name:
-#         print(f"{nl.get_name()}")
-
-# # [ ] check_connection() # Raises NanoleafConnectionError if connection fails
-
-# # Power
-#     if args.get_power:
-#         print(f"Power: {nl.get_power()}")
-#     if args.power_off:
-#         nl.power_off()
-#         print(f"Power: {nl.get_power()}")
-#     if args.power_on:
-#         nl.power_on()
-#         print(f"Power: {nl.get_power()}")
-# # [X] toggle_power()            # Toggles light on/off
-#     if args.toggle_power:
-#         nl.toggle_power()
-#         print(f"Power: {nl.get_power()}")
-
-# # Colour
-# # Colours are generated using HSV (or HSB) in the API, and these individual values can be adjusted using methods which are as described, hue, saturation, brightness/value. The method in this section uses RGB (0-255) and converts this to HSV.
-# # There are already some pre-set colours which can be imported to be used with the set_color() method:
-# # from nanoleafapi import RED, ORANGE, YELLOW, GREEN, LIGHT_BLUE, BLUE, PINK, PURPLE, WHITE
-# # The set_color() method can then be called, passing in either a pre-set colour or your own RGB colour in the form of a tuple: (r, g, b).
-# # [ ] set_color((r, g, b))      # Set all lights to RGB colour. Pass the colour as a tuple.
-# # [X] set_color(RED)            # Same result but using a pre-set colour.
-# #   - TODO: Implement TUPLE input
-#     elif args.set_color:
-#         color = args.set_color
-#         if color in ("RED", "ORANGE", "YELLOW", "GREEN", "LIGHT_BLUE", "BLUE", "PINK", "PURPLE", "WHITE"):
-#             nl.set_color(locals()[color])
-
-
-
-# # Hue
-# # Use these if you want to change the HSV values manually, otherwise use set_color() for colour change using RGB.
-# # [ ] set_hue(value)            # Sets the hue of the lights (accepts values between 0-360)
-# # [ ] increment_hue(value)      # Increments the hue by set amount (can also be negative)
-# # [ ] get_hue()                 # Returns current hue
-
-# # Saturation
-# # Use these if you want to change the HSV values manually, otherwise use set_color() for colour change using RGB.
-# # [ ] set_saturation(value)            # Sets the saturation of the lights (accepts value between 0-100)
-# # [ ] increment_saturation(value)      # Increments the saturation by set amount (can also be negative)
-# # [ ] get_saturation()                 # Returns current saturation
-
-# # Identify
-# # This is usually used to identify the current lights by flashing them on and off.
-# # [ ] identify()
-
-# # Colour Temperature
-# # [ ] set_color_temp(value)            # Sets the colour temperature of the lights (accepts between 1200-6500)
-# # [ ] increment_color_temp(value)      # Increments the colour temperature by set amount (can also be negative)
-# # [ ] get_color_temp()                 # Returns current colour temperature
-
-# # Colour Mode
-# # [X] get_color_mode()      # Returns current colour mode
-#     if args.get_color_mode:
-#         print(f"Color Mode: {nl.get_color_mode()}")
-
-# # Effects
-# # [X] get_current_effect()    # Returns either name of current effect if available or *Solid*/*Static*/*Dynamic*.
-#     if args.get_current_effect:
-#         print(f"Current Effect: {nl.get_current_effect()}")
-# # [x] list_effects()          # Returns a list of names of all available effects.
-#     if args.list_effects:
-#         print(f"Effects: {nl.list_effects()}")
-
-# # [X] effect_exists(name)     # Helper method which determines whether the given string exists as an effect.
-#     if args.effect_exists:
-#         print(f"{args.effect_exists} exitsts: {nl.effect_exists(args.effect_exists)}")
-# # [X] set_effect(name)        # Sets the current effect.
-#     if args.set_effect:
-#         effect = args.set_effect
-#         print(f"Previous Effect: {nl.get_current_effect()}")
-#         nl.set_effect(effect)
-
-#         t_end = time.time() + 5
-#         while nl.get_current_effect() != effect and time.time() < t_end:
-#             pass
-
-#         print(f"Current Effect: {nl.get_current_effect()}")
-
-
-
-# # Custom Effects
-# # [ ] pulsate((r, g, b), speed)                  # Displays a pulsate effect with the specified colour and speed.
-# # [ ] flow([(r, g, b), (r, g, b), ...], speed)   # Displays a sequence of specified colours and speed.
-# # [ ] spectrum(speed)                            # Displays a spectrum cycling effect with the specified speed.
-
-# # Write Effect
-# # [ ] write_effect(effect_dict)    # Sets a user-created effect.
